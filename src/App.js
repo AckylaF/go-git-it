@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
 
-function App() {
+import Header from './components/header/header';
+import Search from './components/search/search';
+import Card from './components/card/card';
+
+
+export default function App() {
+  const userInput = useSelector(state => state.userInput.username)
+  const dispatch = useDispatch();
+  const userAction = ({ name, login, bio, followers, following, public_repos, avatar_url}) => ({
+    type: 'GET_USER',
+    name,
+    login,
+    bio,
+    followers,
+    following,
+    public_repos,
+    avatar_url
+  });
+
+
+  if(userInput) {
+    fetch(`https://api.github.com/users/${userInput}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.message) {
+        dispatch({ type: 'GET_ERROR', notFound: true})
+      } else {
+        dispatch(userAction(data))
+        dispatch({ type: 'GET_ERROR', notFound: false})
+      }
+    })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <Search />
+      <Card />
+    </>
   );
 }
-
-export default App;
