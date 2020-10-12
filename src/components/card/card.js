@@ -1,31 +1,46 @@
-import React from 'react';
-import { useSelector } from 'react-redux'
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 
+import { Container } from "./styles";
 
 export default function Card() {
-  const user = useSelector(state => state.user.profile);
-  const error = useSelector(state => state.error.notFound)
-  
+  const user = useSelector((state) => state.user.profile);
+  const error = useSelector((state) => state.error.notFound);
+  const dispatch = useDispatch();
+
+  // GETS SEARCHED USER REPOS. DISPATCHES TO STATE.REPOS.PROJECTS
+  const getRepos = () => {
+    fetch(`https://api.github.com/users/${user.login}/repos`)
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch({ type: "GET_REPOS", repos: data });
+      });
+  };
+
   return (
     <>
-      { error === true ? (<h1>Not Found</h1>) : (
-        <div>
-          <img src={user.avatar_url} alt={user.name}/>
+      {error === true ? (
+        <h1>Not Found</h1>
+      ) : (
+        <Container>
+          <img src={user.avatar_url} alt={user.name} />
 
-          <div>
-            <p> {user.name} </p>
-            <p> {user.login} </p>
-            <span>{user.public_repos}</span>
+          <section>
+            <h3> {user.name} </h3>
+            <span> {user.login} </span>
+            <span>{user.public_repos} public repo(s)</span>
             <p> {user.bio} </p>
 
             <div>
               <span> {user.followers} Followers</span>
               <span> {user.following} Following</span>
             </div>
-          </div>
-
-        </div>
+            <button type="button" onClick={getRepos}>
+              View Projects
+            </button>
+          </section>
+        </Container>
       )}
     </>
-  )
+  );
 }
