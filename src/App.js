@@ -11,7 +11,7 @@ import { GlobalStyle, Container } from "./globalStyles";
 export default function App() {
   const userInput = useSelector((state) => state.userInput.username);
   const dispatch = useDispatch();
-  
+
   // RECEIVES DATA FROM API AND RETURNS OBJECT WITH USER INFO
   const userAction = ({
     name,
@@ -46,7 +46,8 @@ export default function App() {
     fetch(`https://api.github.com/users/${userInput}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.message) { // MEANS THE USER DOESN'T EXIST
+        if (data.message) {
+          // MEANS THE USER DOESN'T EXIST
           dispatch({ type: "GET_ERROR", notFound: true });
         } else {
           dispatch(userAction(data));

@@ -1,7 +1,9 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { Container } from "./styles";
+import { Container, Gif } from "./styles";
+
+import notFound from "../../assets/notFound.webp";
 
 export default function Card() {
   const user = useSelector((state) => state.user.profile);
@@ -20,7 +22,7 @@ export default function Card() {
   return (
     <>
       {error === true ? (
-        <h1>Not Found</h1>
+        <Gif src={notFound} alt="User not found" />
       ) : (
         <Container>
           <img src={user.avatar_url} alt={user.name} />
